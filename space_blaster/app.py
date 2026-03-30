@@ -17,7 +17,7 @@ from flask import (
 
 # ─── App Configuration ───────────────────────────────────────────────
 app = Flask(__name__)
-app.secret_key = secrets.token_hex(32)
+app.secret_key = os.environ.get('SECRET_KEY', secrets.token_hex(32))
 DATABASE = os.path.join(os.path.dirname(__file__), 'game.db')
 
 # ─── Database Helpers ─────────────────────────────────────────────────
@@ -374,7 +374,9 @@ def global_stats():
 
 
 # ─── Initialize & Run ────────────────────────────────────────────────
+init_db()
+
 if __name__ == '__main__':
-    init_db()
-    print("🚀 Space Blaster server running at http://localhost:5000")
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    port = int(os.environ.get('PORT', 5000))
+    print(f"🚀 Space Blaster server running at http://localhost:{port}")
+    app.run(debug=True, host='0.0.0.0', port=port)
